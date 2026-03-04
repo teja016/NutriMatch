@@ -587,7 +587,7 @@ function OTPLogin({onLogin}){
     <div className="auth-wrap">
       <div className="mesh"><div className="blob b1c"/><div className="blob b2c"/><div className="blob b3c"/></div>
       <div className="auth-card fup">
-        <div className="auth-logo">NutriEngine</div>
+        <div className="auth-logo">NutriMatch</div>
         <div className="auth-tagline">Your precision nutrition companion ✦</div>
         {stage==="phone"?(
           <>
