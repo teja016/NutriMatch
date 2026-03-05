@@ -1024,7 +1024,7 @@ export default function App(){
 
       <header className="hdr">
         <div className="hdr-in">
-          <div className="logo">NutriEngine</div>
+          <div className="logo">NutriMatch</div>
           <div className="hdr-right">
             {tab==="profile"&&<button onClick={logout} className="btn-ghost" style={{fontSize:11}}>Log out</button>}
             <div className="avatar-btn" onClick={()=>setTab("profile")}>{initials}</div>
