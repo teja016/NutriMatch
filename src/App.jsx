@@ -629,20 +629,31 @@ Rules:
     : {type:"image",source:{type:"base64",media_type:mediaType,data:base64Data}};
 
   const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      model:"claude-sonnet-4-20250514",
-      max_tokens:1500,
-      messages:[{role:"user",content:[contentItem,{type:"text",text:prompt}]}],
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "anthropic-beta": "pdfs-2024-09-25",
+    },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 2000,
+      messages: [{role:"user", content:[contentItem, {type:"text", text:prompt}]}],
     }),
   });
 
+  if (!response.ok) {
+    const errData = await response.json().catch(()=>({}));
+    throw new Error(errData?.error?.message || `API error ${response.status}`);
+  }
+
   const data = await response.json();
-  const text = data.content?.map(c=>c.text||"").join("") || "";
-  // Strip any markdown fences
-  const clean = text.replace(/```json|```/g,"").trim();
-  return JSON.parse(clean);
+  const text = data.content?.map(c => c.text || "").join("") || "";
+  if (!text) throw new Error("Empty response from AI");
+  const clean = text.replace(/```json\s*|```\s*/g, "").trim();
+  const firstBrace = clean.indexOf("{");
+  const lastBrace = clean.lastIndexOf("}");
+  if (firstBrace === -1) throw new Error("No JSON in AI response");
+  return JSON.parse(clean.slice(firstBrace, lastBrace + 1));
 }
 
 // ── MICRO BAR ─────────────────────────────────────────────────
